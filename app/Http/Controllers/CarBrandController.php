@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CarBrand;
 use Illuminate\Http\Request;
+use File;
 
 class CarBrandController extends Controller
 {
@@ -12,7 +13,8 @@ class CarBrandController extends Controller
      */
     public function index()
     {
-        //
+        $carBrands = CarBrand::all();
+        return view('admin.car-brand.index',compact('carBrands'));
     }
 
     /**
@@ -20,7 +22,7 @@ class CarBrandController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.car-brand.create');
     }
 
     /**
@@ -28,7 +30,24 @@ class CarBrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'brand_name'  => 'required',
+            'brand_logo'  => 'required'
+        ]);
+        if($request->hasFile('brand_logo')){
+
+            $file = $request->file('brand_logo');
+            $filename = time().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/brands/'), $filename);
+
+        }        
+
+        CarBrand::create([
+            'brand_name'  => $request->brand_name,
+            'brand_image' => 'uploads/brands/'.$filename, 
+        ]);
+        return redirect()->route('car-brand.index')->with('success', 'Car brand saved successfully');
+       
     }
 
     /**
@@ -44,7 +63,8 @@ class CarBrandController extends Controller
      */
     public function edit(CarBrand $carBrand)
     {
-        //
+        $brandDetails = CarBrand::find($carBrand->id);
+        return view('admin.car-brand.edit',compact('brandDetails'));
     }
 
     /**
@@ -52,7 +72,27 @@ class CarBrandController extends Controller
      */
     public function update(Request $request, CarBrand $carBrand)
     {
-        //
+        $brand = CarBrand::find($carBrand->id);
+
+        if($request->hasfile('brand_logo')){
+
+            $file = $request->file('brand_logo');
+            $filename = time().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/brands/'), $filename);
+
+            $brand->brand_name = $request->brand_name;
+            $brand->brand_image = 'uploads/brands/'. $filename;
+            $brand->save();
+
+        }else{
+
+            $brand->brand_name = $request->brand_name; 
+
+        } 
+
+        $brand->save();
+
+        return redirect()->route('car-brand.index')->with('success', 'Brand update successfully');
     }
 
     /**
@@ -60,6 +100,11 @@ class CarBrandController extends Controller
      */
     public function destroy(CarBrand $carBrand)
     {
-        //
+        $delete = CarBrand::find($carBrand->id);
+        $delete->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Brand deleted successfully.'
+        ]);
     }
 }
