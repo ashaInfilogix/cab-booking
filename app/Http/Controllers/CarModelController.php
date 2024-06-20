@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CarModel;
 use Illuminate\Http\Request;
+use App\Models\CarBrand;
 
 class CarModelController extends Controller
 {
@@ -12,7 +13,8 @@ class CarModelController extends Controller
      */
     public function index()
     {
-        //
+        $carModels = CarModel::with('brands')->get();
+        return view('admin.car-model.index',compact('carModels'));
     }
 
     /**
@@ -20,7 +22,8 @@ class CarModelController extends Controller
      */
     public function create()
     {
-        //
+        $carBrands = CarBrand::all();
+        return view('admin.car-model.add-model',compact('carBrands'));
     }
 
     /**
@@ -28,7 +31,13 @@ class CarModelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //return $request;
+        $carModel =  new CarModel();
+        $carModel->brand_id = $request->brand_id;
+        $carModel->model_name = $request->model_name;
+        $carModel->save();
+
+        return redirect()->route('car-model.index')->with('success', 'Car Model saved successfully');
     }
 
     /**
@@ -44,7 +53,9 @@ class CarModelController extends Controller
      */
     public function edit(CarModel $carModel)
     {
-        //
+        $carBrands = CarBrand::all();
+        $cardModels = CarModel::find($carModel->id);
+        return view('admin.car-model.edit',compact('cardModels','carBrands'));
     }
 
     /**
@@ -52,7 +63,12 @@ class CarModelController extends Controller
      */
     public function update(Request $request, CarModel $carModel)
     {
-        //
+        $carModel = CarModel::find($carModel->id);
+        $carModel->brand_id = $request->brand_id;
+        $carModel->model_name = $request->model_name;
+        $carModel->save();
+
+        return redirect()->route('car-model.index')->with('success', 'Car Model updated successfully');
     }
 
     /**
@@ -60,6 +76,11 @@ class CarModelController extends Controller
      */
     public function destroy(CarModel $carModel)
     {
-        //
+        $delete = CarModel::find($carModel->id);
+        $delete->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Model deleted successfully.'
+        ]);
     }
 }
