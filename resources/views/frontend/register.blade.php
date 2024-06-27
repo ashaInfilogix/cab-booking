@@ -9,18 +9,27 @@
                         <img src="{{ asset('assets/img/logo/logo.png') }}" alt>
                         <p>Create your Taxica account</p>
                     </div>
-                    <form action="#">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            {{$errors->first()}}
+                        </div>
+                    @endif
+                    @if (session('success'))
+                        <x-alert message="{{ session('success') }}"></x-alert>
+                    @endif
+                    <form action="{{ route('register-post') }}" method="POST">
+                        @csrf
                         <div class="form-group">
                             <label>Full Name</label>
-                            <input type="text" class="form-control" placeholder="Your Name">
+                            <input type="text" name="name" class="form-control" placeholder="Your Name">
                         </div>
                         <div class="form-group">
                             <label>Email Address</label>
-                            <input type="email" class="form-control" placeholder="Your Email">
+                            <input type="email" name="email" class="form-control" placeholder="Your Email">
                         </div>
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" class="form-control" placeholder="Your Password">
+                            <input type="password" name="password" class="form-control" placeholder="Your Password">
                         </div>
                         <div class="form-check form-group">
                             <input class="form-check-input" type="checkbox" value id="agree">

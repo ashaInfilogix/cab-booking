@@ -13,10 +13,22 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('driver_id')->nullable();
             $table->string('name');
+            $table->string('last_name')->nullable();
             $table->string('email')->unique();
+            $table->string('contact_number')->nullable();
+            $table->string('dob')->nullable();
+            $table->string('aadhar_number')->nullable();
+            $table->string('aadhar_pic')->nullable();
+            $table->string('license_number')->nullable();
+            $table->string('license_pic')->nullable();
+            $table->string('profile_pic')->nullable();
+            $table->string('country')->nullable();
+            $table->string('address')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('status', ['not_approved','active', 'deactive', 'blocked'])->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

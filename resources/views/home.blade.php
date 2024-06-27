@@ -83,79 +83,63 @@
 
 
     <div class="booking-area">
+        @if (session('success'))
+            <x-alert message="{{ session('success') }}"></x-alert>
+        @endif
         <div class="container">
             <div class="booking-form">
                 <h4 class="booking-title">Book Your Ride</h4>
-                <form action="#">
+                <form id="bookingForm" action="{{ route('bookings.store') }}" method="post">
+                    @csrf
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Pick Up Location</label>
-                                <input type="text" class="form-control" placeholder="Type Location">
+                                <input name="pick_up" type="text" class="form-control" placeholder="Type Location">
                                 <i class="far fa-location-dot"></i>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Drop Off Location</label>
-                                <input type="text" class="form-control" placeholder="Type Location">
+                                <input name="drop_off" type="text" class="form-control" placeholder="Type Location">
                                 <i class="far fa-location-dot"></i>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Passengers</label>
-                                <input type="text" class="form-control" placeholder="Passengers">
+                                <input name="passengers" type="text" class="form-control" placeholder="Passengers">
                                 <i class="far fa-user-tie"></i>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label>Cab Type</label>
-                                <select class="select">
-                                    <option value>Choose Cab</option>
-                                    <option value="1">All Type</option>
-                                    <option value="2">Hybrid</option>
-                                    <option value="3">Luxury</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="form-group">
                                 <label>Pick Up Date</label>
-                                <input type="text" class="form-control date-picker" placeholder="MM/DD/YY">
+                                <input name="pick_up_date" type="text" class="form-control date-picker" placeholder="MM/DD/YY">
                                 <i class="far fa-calendar-days"></i>
                             </div>
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Pick Up Time</label>
-                                <input type="text" class="form-control time-picker" placeholder="00:00 AM">
+                                <input name="pick_up_time" type="text" class="form-control time-picker" placeholder="00:00 AM">
                                 <i class="far fa-clock"></i>
                             </div>
                         </div>
-                        <div class="col-lg-2">
+
+                        <div class="col-lg-3">
                             <div class="form-group">
-                                <label>Driver Age</label>
-                                <select class="select">
-                                    <option value>Choose Age</option>
-                                    <option value="1">Any Age</option>
-                                    <option value="2">25</option>
-                                    <option value="3">30</option>
-                                    <option value="4">35</option>
-                                    <option value="5">40</option>
-                                </select>
+                                <label>Your Contact Email</label>
+                                <input name="user_email" type="email" class="form-control" placeholder="Enter Your Email">
+                                <i class="far fa-envelope"></i>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label>Cab Model</label>
-                                <select class="select">
-                                    <option value>Choose Model</option>
-                                    <option value="1">All Model</option>
-                                    <option value="2">M5 2022</option>
-                                    <option value="3">Q7 2021</option>
-                                </select>
+                                <label>Your Contact Number</label>
+                                <input name="contact_number" type="number" class="form-control" placeholder="Enter Your Contact Number">
+                                <i class="far fa-mobile"></i>
                             </div>
                         </div>
                         <div class="col-lg-2 align-self-end">
@@ -1375,4 +1359,43 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function() {
+            $('#bookingForm').validate({
+                rules: {
+                    pick_up: "required",
+                    drop_off: "required",
+                    passengers: "required",
+                    cab_type: "required",
+                    pick_up_date: "required",
+                    pick_up_time: "required",
+                    car_model: "required",
+                    user_email: "required",
+                    contact_number: "required",
+                },
+                messages: {
+                    pick_up: "Please enter pick up location",
+                    drop_off: "Please enter drop off location",
+                    passengers: "Please enter number of passengers",
+                    cab_type: "Please select cab type",
+                    pick_up_date: "Please select pick up date",
+                    pick_up_time: "Please select pick up time",
+                    car_model: "Please select car model",
+                    user_email: "Please enter email",
+                    contact_number: "Please enter contact number",
+                },
+                errorClass: "text-danger f-12",
+                errorElement: "span",
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass("form-control-danger");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass("form-control-danger");
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
 @endsection
