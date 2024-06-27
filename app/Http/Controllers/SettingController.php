@@ -12,7 +12,8 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Setting::first();
+        return view('admin.setting',compact('settings'));
     }
 
     /**
@@ -50,9 +51,24 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Setting $setting)
+    public function update(Request $request)
     {
-        //
+        $settings = Setting::first();
+
+        if ($settings) {
+            // Update the retrieved record with the new data
+            $settings->update([
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'address' => $request->address,
+                'about_us' => $request->about_us,
+                'facebook_url' => $request->facebook_url,
+                'twitter_url' => $request->twitter_url,
+                'instagram_url' => $request->instagram_url,
+                'linkedin_url' => $request->linkedin_url // Corrected 'linkedin_url' spelling
+            ]);
+        }
+        return redirect()->route('setting')->with('success', 'Settings Updated successfully');
     }
 
     /**

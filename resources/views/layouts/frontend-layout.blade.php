@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/jquery.timepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/nice-select.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -52,10 +53,18 @@
                         </div>
                     </div>
                     <div class="header-top-right">
-                        <div class="header-top-link">
-                            <a href="{{ route('login') }}"><i class="far fa-arrow-right-to-bracket"></i> Login</a>
-                            <a href="{{ route('register') }}"><i class="far fa-user-vneck"></i> Register</a>
-                        </div>
+                        @auth
+                            <div class="header-top-link">
+                                <a href="{{ route('logout') }}"><span class="pcoded-micon"><i class="fa fa-sign-out" aria-hidden="true"></i>
+                                    Logout</a>
+                            </div>
+                        @else
+                            <div class="header-top-link">
+                                <a href="{{ route('login') }}"><i class="far fa-arrow-right-to-bracket"></i> Login</a>
+                                <a href="{{ route('register') }}"><i class="far fa-user-vneck"></i> Register</a>
+                            </div>
+                        @endauth
+
                         <div class="header-top-social">
                             <span>Follow Us: </span>
                             <a href="#"><i class="fab fa-facebook"></i></a>
@@ -71,7 +80,7 @@
             <nav class="navbar navbar-expand-lg">
                 <div class="container position-relative">
                     <a class="navbar-brand" href="{{ route('home') }}">
-                        <img src="assets/img/logo/logo.png" alt="logo">
+                        <img src="{{ asset('assets/img/logo/logo.png') }}" alt="logo">
                     </a>
                     <div class="mobile-menu-right">
                         <div class="search-btn">
@@ -129,8 +138,7 @@
                 </div>
                 <div class="sidebar-about">
                     <h4>About Us</h4>
-                    <p>There are many variations of passages available sure there majority have suffered alteration in
-                        some form by injected humour or randomised words which don't look even slightly believable.</p>
+                    <p>About Us</p>
                 </div>
                 <div class="sidebar-contact">
                     <h4>Contact Info</h4>
@@ -138,15 +146,15 @@
                         <li>
                             <h6>Email</h6>
                             <a href="#">
-                                <i class="far fa-envelope"></i><span class="__cf_email__">[email&#160;protected]</span></a>
+                                <i class="far fa-envelope"></i><span class="__cf_email__">email</span></a>
                         </li>
                         <li>
                             <h6>Phone</h6>
-                            <a href="tel:+21236547898"><i class="far fa-phone"></i>+2 123 654 7898</a>
+                            <a href="tel:+21236547898"><i class="far fa-phone"></i>phone_number</a>
                         </li>
                         <li>
                             <h6>Address</h6>
-                            <a href="#"><i class="far fa-location-dot"></i>25/B Milford Road, New York</a>
+                            <a href="#"><i class="far fa-location-dot"></i>address</a>
                         </li>
                     </ul>
                 </div>
@@ -260,7 +268,7 @@
 
     <a href="#" id="scroll-top"><i class="far fa-arrow-up"></i></a>
 
-    <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>--}}
     <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('assets/js/modernizr.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>

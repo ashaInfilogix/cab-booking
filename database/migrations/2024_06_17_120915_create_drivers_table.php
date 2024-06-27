@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('driver_id')->nullable();
             $table->string('license_number')->unique()->nullable();
             $table->string('contact_number')->nullable();
+            $table->string('dob')->nullable();
             $table->string('vehicle_number')->nullable();
             $table->string('location')->nullable();
             $table->string('emergency_contact')->nullable();

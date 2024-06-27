@@ -2,99 +2,144 @@
 @section('content')
 <div class="pcoded-inner-content">
     <div class="card">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0">Edit Driver Details</h5>
-            <a href="{{ route('drivers.index') }}" class="btn btn-primary btn-md primary-btn">Back</a>
+            <h5 class="m-0">View Driver Request Details</h5>
+            <a href="{{ route('new.driver') }}" class="btn btn-primary btn-md primary-btn">Back</a>
         </div>   
         <div class="card-block">
-            <form action="{{ route('drivers.update',$drivers->id) }}" method="POST" enctype="multipart/form-data">
+            <form id="drivers" action="{{ route('driver.status',$newDriver->driver_id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
                 <div class="form-group text-align-left">
-                    <img  height="150px" src="{{ asset($drivers->profile_image)}}">
+                    <img  height="150px" src="{{ asset($newDriver->profile_pic)}}">
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-6">
                         <label>Driver Name</label>
-                        <input type="text" value="{{ $drivers->driver_name }}" name="driver_name" class="form-control" placeholder="Driver Name">
+                        <input  type="text" value="{{ $newDriver->name.' '.$newDriver->last_name }}" name="full_name" class="form-control">
                     </div> 
                     <div class="col-sm-6">
                         <label>License Number</label>
-                        <input type="text"  value="{{ $drivers->license_number }}" name="license_number" class="form-control" placeholder="Enter License Number">
+                        <input  type="text"  value="{{ $newDriver->license_number }}" name="license_number" class="form-control" placeholder="Enter License Number">
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-6">
-                        <label>Contact Number</label>
-                        <input type="number" value="{{ $drivers->contact_number }}" name="contact_number" class="form-control" placeholder="Enter Contact Number">
-                    </div> 
-                    <div class="col-sm-6">
-                        <label>Vehicle Number</label>
-                        <select id="vehicle_number" name="vehicle_number" class="form-control">
-                            <option value="">--- Select Vehicle Number ---</option>
-                            @foreach ($cars as $car)
-                                <option value="{{ $car->VIN }}" @selected($car->VIN == $drivers->vehicle_number)>{{ $car->VIN }}</option>
-                            @endforeach
-                        </select>
-                    </div> 
-                </div>
-                <div class="form-group row">
+
                     <div class="col-sm-6">
                         <label>Driver Status</label>
                         <select name="driver_status" class="form-control">
                             <option value="">--- Select Driver Status ---</option>
-                            <option value="active" @selected('active' == $drivers->driver_status)>Active</option>
-                            <option value="leave" @selected('leave' == $drivers->driver_status)>Leave</option>
-                            <option value="suspended" @selected('suspended' == $drivers->driver_status)>Suspended</option>
+                            <option value="not_approved" @selected('not_approved' == $newDriver->status)>Not Approved</option>
+                            <option value="active" @selected('active' == $newDriver->status)>Approved</option>
+                            <option value="deactive" @selected('deactive' == $newDriver->status)>Deactivate</option>
+                            <option value="blocked" @selected('blocked' == $newDriver->status)>Blocked</option>
                         </select>
                     </div> 
                     <div class="col-sm-6">
-                        <label>Location</label>
-                        <input type="text"  value="{{ $drivers->location }}" name="location" class="form-control" placeholder="Enter Location">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-6">
-                        <label>Emergency Contact</label>
-                        <input type="number" value="{{ $drivers->emergency_contact }}" name="emergency_contact" class="form-control" placeholder="Enter Emergency Contact">
+                        <label>Contact Number</label>
+                        <input  type="number" value="{{ $newDriver->contact_number }}" name="contact_number" class="form-control" placeholder="Enter Contact Number">
                     </div> 
                     <div class="col-sm-6">
-                        <label>Insurance Details</label>
-                        <input type="text"  value="{{ $drivers->insurance_details }}" name="insurance_details" class="form-control" placeholder="Enter Insurance Details">
+                        <label>DOB</label>
+                        <input  type="date" id="dob" value="{{ $newDriver->dob }}" name="dob" class="form-control" placeholder="Enter DOB">
                     </div>
-                </div>
-                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label>Aadhar Number</label>
+                        <input  type="text" value="{{ $newDriver->aadhar_number }}" name="aadhar_number" class="form-control" >
+                    </div> 
+
+                    <div class="col-sm-6">
+                        <label>Email</label>
+                        <input  type="text"  value="{{ $newDriver->email }}" name="location" class="form-control" placeholder="Enter Location">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>State</label>
+                        <input  type="text"  value="{{ $newDriver->state }}" name="state" class="form-control" >
+                    </div>
+
                     <div class="col-sm-6">
                         <label>Address</label>
-                        <textarea type="text" value="{{ $drivers->address }}" name="address" class="form-control" placeholder="Enter Address">{{ $drivers->address }}</textarea>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>Choose photo</label>
-                        <input type="file"  id="imageInput" name="image" class="form-control" >
-                        <div id="image_preview"></div>
-                    </div>
-                </div>
-                <h5 class="m-0">Payment Information</h5>
-                <div class="form-group row">
-                    <div class="col-sm-6">
-                        <label>Bank Name</label>
-                        <input type="text" value="{{ $drivers->bankDetails->bank_name }}" name="bank_name" class="form-control" placeholder="Enter Bank Name">
-                    </div> 
-                    <div class="col-sm-6">
-                        <label>Branch Name</label>
-                        <input type="text"  value="{{ $drivers->bankDetails->bank_branch }}" name="bank_branch" class="form-control" placeholder="Enter Branch Name">
+                        <textarea  type="text" value="{{ $newDriver->address }}" name="address" class="form-control">{{ $newDriver->address }}</textarea>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-6">
-                        <label>Account Number</label>
-                        <input type="number" value="{{ $drivers->bankDetails->account_number }}" name="account_number" class="form-control" placeholder="Enter Account Number">
-                    </div> 
+                        <label>Aadhar Card</label>
+                        <a target="_blank" href="{{ asset($newDriver->aadhar_pic) }}"><img class="dr-document" src="{{ asset($newDriver->aadhar_pic) }}"></a>
+                    </div>
                     <div class="col-sm-6">
-                        <label>IFSC Code</label>
-                        <input type="text"  value="{{ $drivers->bankDetails->ifsc_code }}" name="ifsc_code" class="form-control" placeholder="Enter IFSC Code">
+                        <label>Driving License</label>
+                        <a target="_blank" href="{{ asset($newDriver->license_pic) }}"><img class="dr-document" src="{{ asset($newDriver->license_pic) }}"></a>
                     </div>
                 </div>
+                <hr>
+                <h5 class="m-0">Cars List</h5>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <ul class="cars-list">
+                            @foreach($newDriver->carsList as $carsList)
+                                <li><a href="#"><i class="feather icon-eye m-0"></i> {{ $carsList->brand_name.' '.$carsList->model_name.' [ '.$carsList->registration_number.' ]' }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>        
+              {{--  <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label>Car Brand</label>
+                        <select  name="car_brand" class="form-control">
+                            @foreach($carBrands as $carBrand)
+                                <option value="{{ $carBrand->brand_name}}" @selected($newDriver->carDetails->brand_id == $carBrand->id)>{{ $carBrand->brand_name}}</option>
+                            @endforeach
+                        </select>
+                    </div> 
+                    <div class="col-sm-6">
+                        <label>Car Model</label>
+                        <select  name="car_model" class="form-control">
+                            @foreach($carModels as $carModel)
+                                <option value="{{ $carModel->model_name}}" @selected($newDriver->carDetails->model_id == $carModel->id)>{{ $carModel->model_name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Driver ID</label>
+                        <input  type="text"  value="{{ $newDriver->carDetails->driver_id }}" name="driver_id" class="form-control" >
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Registration Number</label>
+                        <input  type="text" value="{{ $newDriver->carDetails->registration_number }}" name="registration_number" class="form-control" >
+                    </div> 
+
+                    <div class="col-sm-6">
+                        <label>Chassis Number</label>
+                        <input  type="text" value="{{ $newDriver->carDetails->chassis_number }}" name="chassis_number" class="form-control" >
+                    </div>
+                    <div class="col-sm-6">
+                        <label>Engine Number</label>
+                        <input  type="text" value="{{ $newDriver->carDetails->engine_number }}" name="engine_number" class="form-control" >
+                    </div> 
+
+                    <div class="col-sm-6">
+                        <label>Locations</label>
+                        <textarea  type="text" value="{{ $newDriver->carDetails->locations }}" name="locations" class="form-control">{{ $newDriver->carDetails->locations }}</textarea>
+                    </div>
+
+                    <div class="form-group  mt-5 row">
+                        <div class="col-sm-2">
+                            <label>Car RC</label>
+                            <a target="_blank" href="{{ asset($newDriver->carDetails->car_rc) }}"><img class="dr-document" src="{{ asset($newDriver->carDetails->car_rc) }}"></a>
+                        </div>
+                    </div>
+                    <div class="form-group mt-5 row">
+                        @foreach(json_decode($newDriver->carDetails->car_images) as $key=> $carImages)
+                            <div class="col-sm-2">
+                                <a target="_blank" href="{{ asset($carImages) }}"><img class="dr-document" src="{{ asset($carImages) }}"></a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div> --}}
                 <button type="submit" class="btn btn-primary primary-btn">Save</button>
             </form>
         </div>
@@ -154,5 +199,33 @@ $(function() {
         }
     });
 })
+
+function validateDOB() {
+    var dobInput = document.getElementById('dob').value;
+    
+    var dob = new Date(dobInput);
+    var today = new Date();
+    var age = today.getFullYear() - dob.getFullYear();
+
+    var dobMonth = dob.getMonth();
+    var todayMonth = today.getMonth();
+    if (todayMonth < dobMonth || (todayMonth === dobMonth && today.getDate() < dob.getDate())) {
+        age--;
+    }
+    
+    if (age < 18 || age > 45) {
+        alert('Age must be between 18 and 45 years.');
+        return false;
+    }
+    
+    return true; 
+}
+    
+var form = document.getElementById('drivers'); 
+form.addEventListener('submit', function(event) {
+    if (!validateDOB()) {
+        event.preventDefault(); 
+    }
+});
 </script>
 @endsection

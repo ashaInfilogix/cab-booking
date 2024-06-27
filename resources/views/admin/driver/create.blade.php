@@ -7,7 +7,7 @@
             <a href="{{ route('drivers.index') }}" class="btn btn-primary btn-md primary-btn">Back</a>
         </div>   
         <div class="card-block">
-            <form action="{{ route('drivers.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="drivers" action="{{ route('drivers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group row">
                     <div class="col-sm-6">
@@ -28,9 +28,11 @@
                         <label>Vehicle Number</label>
                         <select id="vehicle_number" name="vehicle_number" class="form-control">
                             <option value="">--- Select Vehicle Number ---</option>
-                            @foreach ($cars as $car)
-                                <option value="{{ $car->VIN }}">{{ $car->VIN }}</option>
-                            @endforeach
+                            @isset($cars)
+                                @foreach ($cars as $car)
+                                    <option value="{{ $car->VIN }}">{{ $car->VIN }}</option>
+                                @endforeach
+                            @endisset    
                         </select>
                     </div> 
                 </div>
@@ -45,8 +47,8 @@
                         </select>
                     </div> 
                     <div class="col-sm-6">
-                        <label>Location</label>
-                        <input type="text"  name="location" class="form-control" placeholder="Enter Location">
+                        <label>DOB</label>
+                        <input type="date"  id="dob" name="dob" class="form-control" placeholder="Enter DOB">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -64,6 +66,12 @@
                         <label>Address</label>
                         <textarea type="text"  name="address" class="form-control" placeholder="Enter Address"></textarea>
                     </div>
+                    <div class="col-sm-6">
+                        <label>Location</label>
+                        <input type="text"  name="location" class="form-control" placeholder="Enter Location">
+                    </div>
+                </div>
+                <div class="form-group row">
                     <div class="col-sm-6">
                         <label>Choose photo</label>
                         <input type="file"  id="imageInput" name="image" class="form-control" >
@@ -125,7 +133,7 @@ $(function() {
             driver_name: "required",
             license_number: "required",
             contact_information: "required",
-            vehicle_number: "required",
+           // vehicle_number: "required",
             driver_status: "required",
             location: "required",
         },
@@ -133,7 +141,7 @@ $(function() {
             driver_name: "Please enter driver name",
             license_number: "Please enter license number",
             contact_information: "Please enter contact infomation",
-            vehicle_number: "Please select vehicle number",
+           // vehicle_number: "Please select vehicle number",
             driver_status: "Please select driver status",
             location: "Please enter location",
         },
@@ -149,6 +157,34 @@ $(function() {
             form.submit();
         }
     });
-})
+});
+
+function validateDOB() {
+    var dobInput = document.getElementById('dob').value;
+    
+    var dob = new Date(dobInput);
+    var today = new Date();
+    var age = today.getFullYear() - dob.getFullYear();
+
+    var dobMonth = dob.getMonth();
+    var todayMonth = today.getMonth();
+    if (todayMonth < dobMonth || (todayMonth === dobMonth && today.getDate() < dob.getDate())) {
+        age--;
+    }
+    
+    if (age < 18 || age > 45) {
+        alert('Age must be between 18 and 45 years.');
+        return false;
+    }
+    
+    return true; 
+}
+    
+var form = document.getElementById('drivers'); 
+form.addEventListener('submit', function(event) {
+    if (!validateDOB()) {
+        event.preventDefault(); 
+    }
+});
 </script>
 @endsection
