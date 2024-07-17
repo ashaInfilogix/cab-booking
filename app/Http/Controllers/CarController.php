@@ -2,10 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
 use Illuminate\Http\Request;
+
+use App\Models\Driver;
+use App\Models\User;
+use App\Models\BankDetail;
+use App\Models\State;
+use App\Models\CarDetail;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class CarController extends Controller
 {
@@ -14,8 +23,14 @@ class CarController extends Controller
      */
     public function index()
     {
-        $cars = Car::with('brands')->with('models')->get(); 
-        return view('admin.cars.index',compact('cars'));
+        $auth = Auth::user();
+        if($auth->hasRole('Driver')){
+
+            $carsList = User::with('carsList')->where('driver_id',$auth->driver_id)->where('registration_status','completed')->get();
+            return view('admin.cars.index',compact('carsList'));
+        }
+        $carsList = User::role('Driver')->with('carsList')->where('registration_status','completed')->get();
+        return view('admin.cars.index',compact('carsList'));
     }
 
     /**
@@ -23,8 +38,10 @@ class CarController extends Controller
      */
     public function create()
     {
+        $drivers = User::role('Driver')->get();
         $carBrands = CarBrand::all();
-        return view('admin.cars.add',compact('carBrands'));
+        $carModels = CarModel::all();
+        return view('admin.cars.create',compact('carBrands','carModels','drivers'));
     }
 
     /**
@@ -32,13 +49,12 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-
-        $images = $request->images;
+        $images = $request->car_images;
         if ($images) {
             $files = [];
-            if($request->hasfile('images'))
+            if($request->hasfile('car_images'))
             {
-                foreach($request->file('images') as $file)
+                foreach($request->file('car_images') as $file)
                 {
                     $filename = uniqid().'.'.$file->getClientOriginalExtension();
                     $file->move(public_path('uploads/car-images/'), $filename);
@@ -48,28 +64,26 @@ class CarController extends Controller
                 }
             }
         }
-       
+        $driver_id = $request->driver_id;
+        if($request->hasfile('car_rc')){
 
-        $car = Car::create([
+            $file = $request->file('car_rc');
+            $filename = $driver_id.'-'.time().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers-rc/'), $filename);
+            $car_rc = 'uploads/drivers-rc/'.$filename;
+        }
+        $carDetail = CarDetail::create([
+            'driver_id' => $driver_id,
             'brand_id' => $request->brand_id,
             'model_id' => $request->model_id,
-            'year' => $request->year,
-            'color' => $request->color,
-            'VIN' => $request->vin,
-            'engine_number' => $request->engine_number,
+            'registration_number' => $request->registration_number,
             'chassis_number' => $request->chassis_number,
-            'mileage' => $request->mileage,
-            'vehicle_type' => $request->vehicle_type,
-            'transmission' => $request->transmission,
-            'fuel_type' => $request->fuel_type,
-            'doors' => $request->doors,
-            'seats' => $request->seats,
-            'condition' => $request->condition,
-            'description' => $request->description,
-            'image_urls' => json_encode( $files),
+            'engine_number' => $request->engine_number,
+            'locations' => $request->locations,
+            'car_images' => json_encode($files),
+            'car_rc' =>  $car_rc
         ]);
-        return redirect()->route('cars.index')->with('success', 'Car saved successfully');
-
+        return redirect()->route('cars.index')->with('success', 'Car Added successfully');
     }
 
     /**
@@ -77,69 +91,57 @@ class CarController extends Controller
      */
     public function show(Car $car)
     {
-        $cars = Car::find($car->id);
-        $carBrands = CarBrand::all();
-        $carModels = CarModel::all();
 
-        return view('admin.cars.view',compact('carBrands','carModels','cars'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Car $car)
+    public function edit($id)
     {
-        $cars = Car::find($car->id);
+        $newDriver = CarDetail::where('registration_number',$id)->first();
         $carBrands = CarBrand::all();
         $carModels = CarModel::all();
-        return view('admin.cars.edit',compact('carBrands','carModels','cars'));
+        
+        return view('admin.cars.edit',compact('newDriver','carBrands','carModels'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Car $car)
+    public function update(Request $request, $id)
     {
-        $images = $request->images;
+
+        $carDetails = CarDetail::where('registration_number', $id)->first(); 
+
+        $carDetails->registration_number = $request->registration_number;
+        $carDetails->brand_id = $request->brand_id;
+        $carDetails->model_id = $request->model_id;
+        $carDetails->chassis_number = $request->chassis_number;
+        $carDetails->engine_number = $request->engine_number;
+        $carDetails->locations = $request->locations;
+        
+
+        $images = $request->car_images;
         if ($images) {
-            $newImages = [];
-            if($request->hasfile('images'))
+            $files = [];
+            if($request->hasfile('car_images'))
             {
-                foreach($request->file('images') as $file)
+                foreach($request->file('car_images') as $file)
                 {
                     $filename = uniqid().'.'.$file->getClientOriginalExtension();
                     $file->move(public_path('uploads/car-images/'), $filename);
      
-                    $newImages[]  = 'uploads/car-images/'. $filename;
+                    $files[]  = 'uploads/car-images/'. $filename;
 
                 }
+                $newCarImages = array_merge(json_decode($carDetails->car_images),$files);
+                $carDetails->car_images = json_encode($newCarImages);
             }
-            $imagesUpdate = Car::find($car->id);
-            $currentImages = json_decode($imagesUpdate->image_urls);
-            $bothImages = array_merge($currentImages,$newImages);
-            $imagesUpdate->image_urls = json_encode($bothImages);
-            $imagesUpdate->save();
         }
 
-
-        $car = Car::where('id',$car->id)->update([
-            'brand_id' => $request->brand_id,
-            'model_id' => $request->model_id,
-            'year' => $request->year,
-            'color' => $request->color,
-            'VIN' => $request->vin,
-            'engine_number' => $request->engine_number,
-            'chassis_number' => $request->chassis_number,
-            'mileage' => $request->mileage,
-            'vehicle_type' => $request->vehicle_type,
-            'transmission' => $request->transmission,
-            'fuel_type' => $request->fuel_type,
-            'doors' => $request->doors,
-            'seats' => $request->seats,
-            'condition' => $request->condition,
-            'description' => $request->description,
-        ]);
-        return redirect()->route('cars.index')->with('success', 'Car saved successfully');
+        $carDetails->save();
+        return redirect()->route('cars.edit',$id)->with('success', 'Car details updated successfully');
 
     }
 
@@ -170,14 +172,14 @@ class CarController extends Controller
     }
     public function deleteCarImage(Request $request){
        
-        $delete = Car::find($request->carId);
+        $delete = CarDetail::where('registration_number',$request->car_id)->first();
         $imagesURL = [];
-        foreach(json_decode($delete->image_urls) as $image_url ){
-            if($image_url != $request->imagePath){
+        foreach(json_decode($delete->car_images) as $image_url ){
+            if($image_url != $request->image_path){
                 $imagesURL[] = $image_url;
             }
         }
-        $delete->image_urls = json_encode($imagesURL);
+        $delete->car_images = json_encode($imagesURL);
         $delete->save();
         return response()->json([
             'success' => true,

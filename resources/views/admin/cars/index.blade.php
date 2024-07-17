@@ -6,42 +6,38 @@
     @endif
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0">Models List</h5>
-            <a href="{{ route('cars.create') }}" class="btn btn-primary btn-md primary-btn">Add Car</a>
+            <h5 class="m-0">Drivers List</h5>
+            <a href="{{ route('cars.create') }}" class="btn btn-primary btn-md primary-btn">Add New Car</a>
         </div>
-        <table id="cars-list" class="table table-striped table-bordered nowrap">
-            <thead>
+        <table id="new-drivers-list" class="table table-striped table-bordered nowrap">
+            <thead class="text-center">
                 <tr>
-                    <th>#</th>
-                    <th>Model</th>
-                    <th>Company</th>
+                    <th>ID</th>
+                    <th>Driver Name</th>
+                    <th>Driver Profile</th>
+                    <th>Vichle Number</th>
+                    <th>Date & Time</th>
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($cars as $key => $car)
-                <tr>
-                    <td>{{ $key+1 }}</td>    
-                    <td>{{ $car->models->model_name }}</td>    
-                    <td>{{ $car->brands->brand_name }}</td>    
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                                <a href="{{ route('cars.show', $car->id) }}"
+            <tbody class="text-center">   
+                @foreach($carsList as $newDriver)
+                    <tr>
+                        <td>{{ $newDriver->driver_id }}</td>    
+                        <td>{{ $newDriver->name.' '.$newDriver->last_name }}</td>    
+                        <td><img src="{{ asset($newDriver->profile_pic) }}" width="50px" height="50px"></td>    
+                        <td>{{ $newDriver->carDetails->registration_number }}</td>
+                        <td>{{ $newDriver->created_at }}</td>
+            
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ route('cars.edit',$newDriver->carDetails->registration_number) }}"
                                     class="btn btn-primary primary-btn waves-effect waves-light mr-2 edit-vehicle-type">
-                                    <i class="feather icon-eye m-0"></i>
+                                    <i class="feather icon-eye m-0"></i> View Details
                                 </a>
-                                <a href="{{ route('cars.edit', $car->id) }}"
-                                    class="btn btn-primary primary-btn waves-effect waves-light mr-2 edit-vehicle-type">
-                                    <i class="feather icon-edit m-0"></i>
-                                </a>
-                                <button data-source="Car"
-                                    data-endpoint="{{ route('cars.destroy', $car->id) }}"
-                                    class="delete-btn primary-btn btn btn-danger waves-effect waves-light">
-                                    <i class="feather icon-trash m-0"></i>
-                                </button>
-                        </div>
-                    </td>
-                </tr> 
+                            </div>
+                        </td>
+                    </tr> 
                 @endforeach
             </tbody>
         </table>
@@ -50,13 +46,9 @@
     <x-include-plugins dataTable></x-include-plugins>
     <script>
         $(function() {
-            $('#cars-list').DataTable({
+            $('#new-drivers-list').DataTable({
                 searching: true
             });
         })
     </script>
 @endsection
-
-
-
-

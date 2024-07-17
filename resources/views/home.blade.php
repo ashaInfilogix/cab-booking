@@ -92,65 +92,73 @@
                 <form id="bookingForm" action="{{ route('bookings.store') }}" method="post">
                     @csrf
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-12">
                             <div class="form-group">
-                                <label>Pick Up Location</label>
-                                <input name="pick_up" type="text" class="form-control" placeholder="Type Location">
-                                <i class="far fa-location-dot"></i>
+                                <label>Enter Location, Car, Driver</label>
+                                <input name="pick_up" type="text" id="search-box-2" class="form-control" placeholder="Type Location, Driver, Cars">
+                                <i class="far fa-search"></i>
+                            </div>
+                        <div class="search-list-2">
+                        </div>
+                        <div id="loader" style="display: none;">
+                            <div class="loader-inner">
+                                Loading... 
                             </div>
                         </div>
-                        <div class="col-lg-3">
-                            <div class="form-group">
-                                <label>Drop Off Location</label>
-                                <input name="drop_off" type="text" class="form-control" placeholder="Type Location">
-                                <i class="far fa-location-dot"></i>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="form-group">
-                                <label>Passengers</label>
-                                <input name="passengers" type="text" class="form-control" placeholder="Passengers">
-                                <i class="far fa-user-tie"></i>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="form-group">
-                                <label>Pick Up Date</label>
-                                <input name="pick_up_date" type="text" class="form-control date-picker" placeholder="MM/DD/YY">
-                                <i class="far fa-calendar-days"></i>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="form-group">
-                                <label>Pick Up Time</label>
-                                <input name="pick_up_time" type="text" class="form-control time-picker" placeholder="00:00 AM">
-                                <i class="far fa-clock"></i>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3">
-                            <div class="form-group">
-                                <label>Your Contact Email</label>
-                                <input name="user_email" type="email" class="form-control" placeholder="Enter Your Email">
-                                <i class="far fa-envelope"></i>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="form-group">
-                                <label>Your Contact Number</label>
-                                <input name="contact_number" type="number" class="form-control" placeholder="Enter Your Contact Number">
-                                <i class="far fa-mobile"></i>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 align-self-end">
-                            <button class="theme-btn" type="submit">Book Taxi<i class="fas fa-arrow-right"></i></button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
+    <div class="service-area bg py-120" id="book_ride">
+        <div class="container" >
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <div class="site-heading text-center">
+                        <span class="site-title-tagline">Services</span>
+                        <h2 class="site-title">Our Best Drivers For You</h2>
+                        <div class="heading-divider"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @foreach($drivers as $driver)
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-item wow fadeInUp" data-wow-delay=".25s">
+                        <div class="service-img">
+                            <img src="{{ asset( $driver->profile_pic ) }}" alt>
+                        </div>
+                        <div class="service-icon">
+                            <img src="assets/img/icon/taxi-booking-1.svg" alt>
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">
+                                <a href="{{ route('driver.info',$driver->driver_id) }}">{{ $driver->name.' '.$driver->last_name }}</a>
+                            </h3>
+                            <p class="service-text">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $driver->totalRating)
+                                        <i class="fa fa-star" aria-hidden="true" style="color:#fdb100"></i>
+                                    @else
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    @endif
+                                @endfor
+                                <br>
+                                <i class="fa fa-car" aria-hidden="true"></i> : {{ $driver->model_name }}
+                                <br>
+                                <i class="fa fa-globe" aria-hidden="true"></i> : {{ $driver->carDetails->locations }}
+                            </p>
+                            <div class="service-arrow">
+                                <a href="{{ route('driver.info',$driver->driver_id) }}" class="theme-btn">Book Now<i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
 
     <div class="about-area py-120">
         <div class="container">
@@ -196,155 +204,6 @@
                             </ul>
                         </div>
                         <a href="#" class="theme-btn mt-4">Discover More<i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="service-area bg py-120">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 mx-auto">
-                    <div class="site-heading text-center">
-                        <span class="site-title-tagline">Services</span>
-                        <h2 class="site-title">Our Best Services For You</h2>
-                        <div class="heading-divider"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-item wow fadeInUp" data-wow-delay=".25s">
-                        <div class="service-img">
-                            <img src="assets/img/service/01.jpg" alt>
-                        </div>
-                        <div class="service-icon">
-                            <img src="assets/img/icon/taxi-booking-1.svg" alt>
-                        </div>
-                        <div class="service-content">
-                            <h3 class="service-title">
-                                <a href="#">Online Booking</a>
-                            </h3>
-                            <p class="service-text">
-                                There are many variations of passages orem psum available but the majority have
-                                suffered alteration in some form by injected.
-                            </p>
-                            <div class="service-arrow">
-                                <a href="#" class="theme-btn">Read More<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-item wow fadeInUp" data-wow-delay=".50s">
-                        <div class="service-img">
-                            <img src="assets/img/service/02.jpg" alt>
-                        </div>
-                        <div class="service-icon">
-                            <img src="assets/img/icon/city-taxi.svg" alt>
-                        </div>
-                        <div class="service-content">
-                            <h3 class="service-title">
-                                <a href="#">City Transport</a>
-                            </h3>
-                            <p class="service-text">
-                                There are many variations of passages orem psum available but the majority have
-                                suffered alteration in some form by injected.
-                            </p>
-                            <div class="service-arrow">
-                                <a href="#" class="theme-btn">Read More<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-item wow fadeInUp" data-wow-delay=".75s">
-                        <div class="service-img">
-                            <img src="assets/img/service/03.jpg" alt>
-                        </div>
-                        <div class="service-icon">
-                            <img src="assets/img/icon/airport.svg" alt>
-                        </div>
-                        <div class="service-content">
-                            <h3 class="service-title">
-                                <a href="#">Airport Transport</a>
-                            </h3>
-                            <p class="service-text">
-                                There are many variations of passages orem psum available but the majority have
-                                suffered alteration in some form by injected.
-                            </p>
-                            <div class="service-arrow">
-                                <a href="#" class="theme-btn">Read More<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-item wow fadeInUp" data-wow-delay=".25s">
-                        <div class="service-img">
-                            <img src="assets/img/service/04.jpg" alt>
-                        </div>
-                        <div class="service-icon">
-                            <img src="assets/img/icon/business.svg" alt>
-                        </div>
-                        <div class="service-content">
-                            <h3 class="service-title">
-                                <a href="#">Business Transport</a>
-                            </h3>
-                            <p class="service-text">
-                                There are many variations of passages orem psum available but the majority have
-                                suffered alteration in some form by injected.
-                            </p>
-                            <div class="service-arrow">
-                                <a href="#" class="theme-btn">Read More<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-item wow fadeInUp" data-wow-delay=".50s">
-                        <div class="service-img">
-                            <img src="assets/img/service/05.jpg" alt>
-                        </div>
-                        <div class="service-icon">
-                            <img src="assets/img/icon/taxi-2.svg" alt>
-                        </div>
-                        <div class="service-content">
-                            <h3 class="service-title">
-                                <a href="#">Regular Transport</a>
-                            </h3>
-                            <p class="service-text">
-                                There are many variations of passages orem psum available but the majority have
-                                suffered alteration in some form by injected.
-                            </p>
-                            <div class="service-arrow">
-                                <a href="#" class="theme-btn">Read More<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-item wow fadeInUp" data-wow-delay=".75s">
-                        <div class="service-img">
-                            <img src="assets/img/service/06.jpg" alt>
-                        </div>
-                        <div class="service-icon">
-                            <img src="assets/img/icon/taxi.svg" alt>
-                        </div>
-                        <div class="service-content">
-                            <h3 class="service-title">
-                                <a href="#">Tour Transport</a>
-                            </h3>
-                            <p class="service-text">
-                                There are many variations of passages orem psum available but the majority have
-                                suffered alteration in some form by injected.
-                            </p>
-                            <div class="service-arrow">
-                                <a href="#" class="theme-btn">Read More<i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1359,7 +1218,7 @@
             </div>
         </div>
     </div>
-    <script>
+    {{-- <script>
         $(function() {
             $('#bookingForm').validate({
                 rules: {
@@ -1395,6 +1254,32 @@
                 submitHandler: function(form) {
                     form.submit();
                 }
+            });
+        });
+    </script>--}}
+    <script>
+        $(document).ready(function(){    
+            $('#search-box-2').on('keyup', function() {
+                $('#loader').show();
+                var query = this.value;
+                //$("#model_list").html('');
+                $.ajax({
+                    url: "{{ url('search-filter') }}",
+                    type: "POST",
+                    data: {
+                        query: query,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(result) {
+                        setTimeout(() => {
+                            $('.search-list-2').html(result);
+                            $('#loader').hide();
+                        }, 1000);
+
+                    },error : function(err){
+                        console.log(err);
+                    }
+                });
             });
         });
     </script>

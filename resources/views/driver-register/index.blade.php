@@ -73,5 +73,43 @@ $(function() {
         }
     });
 })*/
+$('#aadhar_number').on('input', function(){
+    var value = $(this).val(); 
+    var length = value.length; 
+    
+    if (length > 12) {
+        $(this).val(value.substring(0, 12)); 
+        $('#aadhar_msg').html('');
+        alert('Aadhaar number cannot be more than 12 digits.');
+    } 
+
+    if (length < 12) {
+        $('#aadhar_msg').html('The Aadhaar number should be 12 digits long.')
+    } else if (length === 12) {
+        if (!/^\d{12}$/.test(value)) {
+           $('#aadhar_msg').html('');
+            console.log('The Aadhaar number must be all digits.');
+        }
+    }
+});
+$('#license_number').on('input', function(){
+    var value = $(this).val(); 
+    var length = value.length; 
+    
+    if (length > 16) {
+        $(this).val(value.substring(0, 12)); 
+        $('#aadhar_msg').html('');
+        alert('License number cannot be more than 16 digits.');
+    } 
+
+    if (length < 16) {
+        $('#license_number').html('The License number should be 16 digits long.')
+    } else if (length === 16) {
+        if (!/^\d{12}$/.test(value)) {
+           $('#license_msg').html('');
+            console.log('The Lincense number must be all digits.');
+        }
+    }
+});
 </script>
 @endsection

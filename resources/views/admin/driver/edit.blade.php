@@ -8,14 +8,19 @@
             </div>
         @endif
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0">View Driver Request Details</h5>
+            <h5 class="m-0">View Driver Details</h5>
             <a href="{{ route('new.driver') }}" class="btn btn-primary btn-md primary-btn">Back</a>
         </div>   
         <div class="card-block">
-            <form id="drivers" action="{{ route('driver.status',$newDriver->driver_id) }}" method="POST" enctype="multipart/form-data">
+            <form id="drivers" action="{{ route('drivers.update',$newDriver->driver_id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="form-group text-align-left">
-                    <img  height="150px" src="{{ asset($newDriver->profile_pic)}}">
+                @method('PUT')
+                <div class="form-group text-align-left position-relative">
+                    <img id="profilePic" height="150px" src="{{ asset($newDriver->profile_pic)}}" class="profile-pic" alt="Profile Picture">
+                    <div class="edit-button edit">
+                        <i class="fa fa-pencil-alt" id="change_pic"></i>
+                    </div>
+                    <input type="file" value="{{ $newDriver->profile_pic }}" name="profile_pic" style="display:none;" accept="image/*" onchange="previewImage(event)">
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-6">
@@ -52,12 +57,22 @@
 
                     <div class="col-sm-6">
                         <label>Email</label>
-                        <input  type="text"  value="{{ $newDriver->email }}" name="location" class="form-control" placeholder="Enter Location">
+                        <input  type="text"  value="{{ $newDriver->email }}" name="email" class="form-control" placeholder="Enter Email">
                     </div>
 
                     <div class="col-sm-6">
                         <label>State</label>
-                        <input  type="text"  value="{{ $newDriver->state }}" name="state" class="form-control" >
+                        <select name="state" class="form-control">
+                            @foreach($states as $state)
+                                <option value="{{ $state->name }}" @selected($state->name == $newDriver->state)>{{ $state->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    
+                    <div class="col-sm-6">
+                        <label>Password</label>
+                        <input  type="text"  value="" name="password" class="form-control" >
                     </div>
 
                     <div class="col-sm-6">
@@ -81,7 +96,7 @@
                     <div class="col-sm-6">
                         <ul class="cars-list">
                             @foreach($newDriver->carsList as $carsList)
-                                <li><a href="#"><i class="feather icon-eye m-0"></i> {{ $carsList->brand_name.' '.$carsList->model_name.' [ '.$carsList->registration_number.' ]' }}</a></li>
+                                <li><a href="{{ route('cars.edit',$carsList->registration_number) }}"><i class="feather icon-eye m-0"></i> {{ $carsList->brand_name.' '.$carsList->model_name.' [ '.$carsList->registration_number.' ]' }}</a></li>
                             @endforeach
                         </ul>
                     </div>
@@ -226,6 +241,20 @@ form.addEventListener('submit', function(event) {
     if (!validateDOB()) {
         event.preventDefault(); 
     }
+});
+
+function previewImage(event) {
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function(){
+        var dataURL = reader.result;
+        var img = document.getElementById('profilePic');
+        img.src = dataURL;
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+$('#change_pic').click(function(){
+   $('[name="profile_pic"]').click(); 
 });
 </script>
 @endsection

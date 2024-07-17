@@ -84,6 +84,12 @@ class UserController extends Controller
             //dd($user->getRoleNames());
             if ($user->hasRole('Admin')) {
                 return redirect()->route('admin-home');
+            }else if($user->hasRole('Driver')){
+                if($user->status != 'active'){
+                    return  redirect()->route('login')->withErrors(['error' => 'Your Account is not approved yet']);
+                }else{
+                    return redirect()->route('admin-home');
+                }   
             }else{
                 return redirect()->route('home');
             }
@@ -131,17 +137,12 @@ class UserController extends Controller
             $filename = time().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('assets/img/admin/'), $filename);
             $filePath = 'assets/img/admin/'.$filename;
-        
-        }else{
-
-            $filePath = '';
-
+            $user->profile_pic = $filePath;
         }
         $user = User::find(Auth::id());
-        $user->name = $request->first_name.' '.$request->last_name;
+        $user->name = $request->name.' '.$request->last_name;
         $user->email = $request->email; 
         $user->contact_number = $request->contact_number;
-        $user->profile_pic = $filePath;
         $user->save(); 
         return  redirect()->route('profile')->with(['success' => 'Profile Updated Successfully']);
     }

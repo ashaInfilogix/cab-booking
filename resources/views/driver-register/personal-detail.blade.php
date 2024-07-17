@@ -1,4 +1,9 @@
 <div class="main-login main-center">
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <h4>Personal Details</h4>
     <form id="form" class="form-horizontal" method="post" action="{{ route('drivers.store') }}" enctype="multipart/form-data">
         @csrf
@@ -74,14 +79,16 @@
                     </span>
                     <input type="number" class="form-control" name="aadhar_number" id="aadhar_number"  placeholder="Enter your aadhar number" required/>
                 </div>
+                <small id="aadhar_msg" style="color:red;"></small>
             </div>
             <div class="col-md-6">
                 <label for="license" class="cols-sm-2 control-label">Driving License Number</label>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>
                     </span>
-                    <input type="number" class="form-control" name="license_number" id="license_number"  placeholder="Enter your license number" required/>
+                    <input type="text" class="form-control" name="license_number" id="license_number"  placeholder="Enter your license number" required/>
                 </div>
+                <small id="license_msg" style="color:red;"></small>
             </div>
 
             <div class="col-md-6">

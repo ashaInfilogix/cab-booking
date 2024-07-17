@@ -153,28 +153,38 @@ body{
     } 
 }
 </style>
+@if (session('message'))
+<x-alert message="{{ session('message') }}"></x-alert>
+@endif
 <div class="wrapper">
-    <div class="pricing-table gprice-single">
-        <div class="head">
-            <h4 class="title">Driver Registration: First Two Months Free!</h4>
-        </div>
-        <div class="content">
-            <div class="price">
-                <h1>$0</h1>
+    @foreach($plans as $plan)
+        <div class="pricing-table gprice-single">
+            <div class="head">
+                <h4 class="title">{{ $plan->plan_name }}</h4>
             </div>
-            <ul>
-                <li>Join our network of drivers with no registration fees for the first two months.</li>
-                <li>Enjoy flexible driving schedules that fit your lifestyle.</li>
-                <li>Competitive earnings with transparent payment systems.</li>
-                <li>24/7 support from our dedicated team.</li>
-                <li>Access to modern vehicles equipped for comfort and safety.</li>
-                <li>No commission on your earnings during the promotional period.</li>
-            </ul>
-            <div class="sign-up">
-                <a href="#" class="btn bordered radius">Sign Up Free Now</a>
+            <div class="content">
+                <div class="price">
+                    <h1>${{ $plan->amount }}</h1>
+                </div>
+                <ul>
+                    @foreach(json_decode($plan->list_of_points) as $list)
+                        <li>{{ $list }}</li>
+                    @endforeach
+                </ul>
+                <div class="sign-up">
+                    @if ($plan->amount>0)
+                        <button class="btn" @disabled(true)>Buy Now</button>
+                    @else
+                    <a href="{{ route('make.payment', [
+                        'id' => $plan->id,
+                        'driver_id' => $id,
+                        'price' => $plan->amount
+                    ]) }}" class="btn bordered radius">Signup Now</a>
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
+    @endforeach
     <!--div class="pricing-table gprice-single">
         <div class="head">
             <h4 class="title">Standard</h4>

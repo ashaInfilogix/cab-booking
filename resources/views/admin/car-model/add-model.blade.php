@@ -3,7 +3,7 @@
 <div class="pcoded-inner-content">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0">Models List</h5>
+            <h5 class="m-0">Add Models</h5>
             <a href="{{ route('car-model.index') }}" class="btn btn-primary btn-md primary-btn">Back</a>
         </div>   
         <div class="card-block">

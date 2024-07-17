@@ -106,7 +106,7 @@
                                 <button type="button" class="nav-right-link"><i class="far fa-search"></i></button>
                             </div>
                             <div class="nav-right-btn mt-2">
-                                <a href="#" class="theme-btn"><span class="fas fa-taxi"></span>Book A Taxi</a>
+                                <a href="#book_ride" class="theme-btn"><span class="fas fa-taxi"></span>Book A Taxi</a>
                             </div>
                             <div class="sidebar-btn">
                                 <button type="button" class="nav-right-link">
@@ -119,10 +119,17 @@
                     <div class="search-area">
                         <form action="#">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Type Keyword...">
+                                <input type="text" id="search-box" class="form-control" placeholder="Type Name, Location, Car">
                                 <button type="submit" class="search-icon-btn"><i class="far fa-search"></i></button>
                             </div>
                         </form>
+                        <div class="search-list">
+                        </div>
+                        <div id="loader" style="display: none;">
+                            <div class="loader-inner">
+                                Loading... 
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -171,8 +178,6 @@
 
     <main class="main">
         @yield('content')
-
-        
     </main>
 
     <footer class="footer-area">
@@ -284,5 +289,31 @@
     <script src="{{ asset('assets/js/jquery.nice-select.min.js') }}"></script>
     <script src="{{ asset('assets/js/wow.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script>
+        $(document).ready(function(){    
+            $('#search-box').on('keyup', function() {
+                $('#loader').show();
+                var query = this.value;
+                //$("#model_list").html('');
+                $.ajax({
+                    url: "{{ url('search-filter') }}",
+                    type: "POST",
+                    data: {
+                        query: query,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(result) {
+                        setTimeout(() => {
+                            $('.search-list').html(result);
+                            $('#loader').hide();
+                        }, 1000);
+
+                    },error : function(err){
+                        console.log(err);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

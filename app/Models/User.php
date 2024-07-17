@@ -32,7 +32,9 @@ class User extends Authenticatable
         'password',
         'status',
         'state',
-        'address'
+        'address',
+        'position',
+        'show_on'
     ];
     protected $guarded = [];
 

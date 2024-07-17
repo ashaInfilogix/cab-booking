@@ -20,7 +20,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:500,700" rel="stylesheet">
-   
+
     <link rel="stylesheet" type="text/css" href=" {{ asset('assets/css/bootstrap.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/css/waves.min.css') }}" type="text/css" media="all">
@@ -98,7 +98,7 @@
                                             <h6>Notifications</h6>
                                             <label class="label label-danger">New</label>
                                         </li>
-                                        {{--@foreach($notifications as $notification)
+                                        {{-- @foreach ($notifications as $notification)
                                         <li>
                                             <div class="media">
                                                 <div class="media-body">
@@ -108,7 +108,7 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        @endforeach--}}
+                                        @endforeach --}}
                                     </ul>
                                 </div>
                             </li>
@@ -123,11 +123,13 @@
                             <li class="user-profile header-notification">
                                 <div class="dropdown-primary dropdown">
                                     <div class="dropdown-toggle" data-toggle="dropdown">
-                                     
+
                                         @isset(Auth::user()->profile_pic)
-                                            <img  src="{{ asset(Auth::user()->profile_pic) }}" class="img-radius" alt="User-Profile-Image">
+                                            <img src="{{ asset(Auth::user()->profile_pic) }}" class="img-radius"
+                                                alt="User-Profile-Image">
                                         @else
-                                            <img src="{{ asset('assets/img/admin/avatar-4.jpg') }}" class="img-radius" alt="User-Profile-Image">
+                                            <img src="{{ asset('assets/img/admin/avatar-4.jpg') }}" class="img-radius"
+                                                alt="User-Profile-Image">
                                         @endisset
 
                                         <span>{{ Auth::user()->name }}</span>
@@ -135,11 +137,13 @@
                                     </div>
                                     <ul class="show-notification profile-notification dropdown-menu"
                                         data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                                        @role('Admin')
                                         <li>
                                             <a href="#!">
                                                 <i class="feather icon-settings"></i> Settings
                                             </a>
                                         </li>
+                                        @endrole
                                         <li>
                                             <a href="{{ route('profile') }}">
                                                 <i class="feather icon-user"></i> Profile
@@ -167,8 +171,8 @@
                 <div class="main-friend-chat">
                     <div class="media chat-messages">
                         <a class="media-left photo-table" href="#!">
-                            <img class="media-object img-radius img-radius m-t-5" src="{{ asset('assets/img/admin/avatar-2.jpg') }}"
-                                alt="Generic placeholder image">
+                            <img class="media-object img-radius img-radius m-t-5"
+                                src="{{ asset('assets/img/admin/avatar-2.jpg') }}" alt="Generic placeholder image">
                         </a>
                         <div class="media-body chat-menu-content">
                             <div class="">
@@ -188,8 +192,8 @@
                     </div>
                     <div class="media chat-messages">
                         <a class="media-left photo-table" href="#!">
-                            <img class="media-object img-radius img-radius m-t-5" src="{{ asset('assets/img/admin/avatar-2.jpg') }}"
-                                alt="Generic placeholder image">
+                            <img class="media-object img-radius img-radius m-t-5"
+                                src="{{ asset('assets/img/admin/avatar-2.jpg') }}" alt="Generic placeholder image">
                         </a>
                         <div class="media-body chat-menu-content">
                             <div class="">
@@ -220,127 +224,119 @@
                             <div class="pcoded-inner-navbar main-menu">
                                 <div class="pcoded-navigation-label">Navigation</div>
                                 <ul class="pcoded-item pcoded-left-item">
-                                    <li class="ms-hover {{ Request::is('admin') ? 'active' : '' }}" >
+                                    <li class="ms-hover {{ Request::is('admin') ? 'active' : '' }}">
                                         <a href="{{ route('admin-home') }}" class="waves-effect waves-dark">
                                             <span class="pcoded-micon"><i class="feather icon-home"></i></span>
                                             <span class="pcoded-mtext">Dashboard</span>
                                         </a>
                                     </li>
-                                    <li class="ms-hover {{ Request::is(
-                                        'admin/bookings', 
-                                        'admin/bookings/create', 
-                                        'admin/bookings/*/edit',
-                                        ) ? 'pcoded-trigger' : '' 
-                                    }}">
-                                        <a href="{{ route('bookings.index') }}" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon">
-                                            <i class="fa fa-taxi" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="pcoded-mtext">Bookings</span>
+                                    @role('Admin')
+                                    <li
+                                        class="ms-hover {{ Request::is('admin/home-manage', 'admin/home-manage/create', 'admin/home-manage/*/edit') ? 'pcoded-trigger' : '' }}">
+                                        <a href="{{ route('home-manage.index') }}" class="waves-effect waves-dark">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Manage Home Rating</span>
                                         </a>
                                     </li>
-                                    <li class="ms-hover {{ Request::is(
-                                        'admin/new-drivers-request', 
-                                        'admin/drivers-request-view/*', 
-                                        ) ? 
-                                        'active' : '' 
-                                    }}">
+                                    
+                                    <li
+                                        class="ms-hover {{ Request::is('admin/new-drivers-request', 'admin/drivers-request-view/*') ? 'active' : '' }}">
                                         <a href="{{ route('new.driver') }}" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon">
-                                            <i class="fa fa-user-secret" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="pcoded-mtext">New Drivers Request </span>
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-user-secret" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">New Drivers Request </span>
+                                            <span class="pcoded-badge label label-warning"></span>
                                         </a>
                                     </li>
-                                    <li class="ms-hover {{ Request::is(
-                                        'admin/drivers', 
-                                        'admin/drivers/create', 
-                                        'admin/drivers/*/edit') ? 
-                                        'active' : '' 
-                                    }}">
+                                    @endrole
+                                    <li
+                                        class="ms-hover {{ Request::is('admin/drivers', 'admin/drivers/create', 'admin/drivers/*/edit') ? 'active' : '' }}">
                                         <a href="{{ route('drivers.index') }}" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon">
-                                            <i class="fa fa-user-secret" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="pcoded-mtext">Drivers</span>
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-users" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Drivers</span>
                                         </a>
                                     </li>
-                                    <li class="pcoded-hasmenu {{ Request::is(
-                                        'admin/cars', 
-                                        'admin/car-brand', 
-                                        'admin/car-model', 
-                                        'admin/cars/create', 
-                                        'admin/car-brand/create', 
-                                        'admin/car-model/create', 
-                                        'admin/cars/*/edit',
-                                        'admin/car-brand/*/edit',
-                                        'admin/car-model/*/edit',
-                                        ) ? 'pcoded-trigger' : '' 
-                                    }}">
+                                    @role('Admin')
+                                    <li
+                                    class="ms-hover {{ Request::is('admin/under-process', 'admin/under-process/create', 'admin/under-process/*/edit') ? 'active' : '' }}">
+                                        <a href="{{ route('under-process.index') }}" class="waves-effect waves-dark">
+                                            <span class="pcoded-micon">
+                                                <i class="fa fa-users" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Under Process Request</span>
+                                        </a>
+                                    </li>
+                                    @endrole
+                                    <li
+                                        class="pcoded-hasmenu {{ Request::is(
+                                            'admin/cars',
+                                            'admin/car-brand',
+                                            'admin/car-model',
+                                            'admin/cars/create',
+                                            'admin/car-brand/create',
+                                            'admin/car-model/create',
+                                            'admin/cars/*/edit',
+                                            'admin/car-brand/*/edit',
+                                            'admin/car-model/*/edit',
+                                        )
+                                            ? 'pcoded-trigger'
+                                            : '' }}">
                                         <a href="javascript:void(0)" class="waves-effect waves-dark">
                                             <span class="pcoded-micon"><i class="fa fa-car" aria-hidden="true"></i>
                                             </span>
                                             <span class="pcoded-mtext">Cars</span>
-                                            <span class="pcoded-badge label label-warning">NEW</span>
                                         </a>
                                         <ul class="pcoded-submenu" @style([
-                                            'display: block' => Request::is(
-											'admin/cars',
-											'admin/car-brand',
-											'admin/car-model',
-											'admin/cars/create',
-											'admin/car-brand/create',
-											'admin/car-model/create',
-											'admin/car-brand/*/edit',
-											'admin/car-model/*/edit',
-											'admin/cars/*/edit'),
+                                            'display: block' => Request::is('admin/cars', 'admin/car-brand', 'admin/car-model', 'admin/cars/create', 'admin/car-brand/create', 'admin/car-model/create', 'admin/car-brand/*/edit', 'admin/car-model/*/edit', 'admin/cars/*/edit'),
                                         ])>
-                                            <li class=" pcoded-hasmenu {{ Request::is(
-                                                'admin/car-brand', 
-                                                'admin/car-model', 
-                                                'admin/car-brand/create', 
-                                                'admin/car-model/create',
-                                                'admin/car-brand/*/edit',
-                                                'admin/car-model/*/edit',
-                                                ) ? 'active' : '' 
-                                            }}" >
+                                            @role('Admin')
+                                            <li
+                                                class=" pcoded-hasmenu {{ Request::is(
+                                                    'admin/car-brand',
+                                                    'admin/car-model',
+                                                    'admin/car-brand/create',
+                                                    'admin/car-model/create',
+                                                    'admin/car-brand/*/edit',
+                                                    'admin/car-model/*/edit',
+                                                )
+                                                    ? 'active'
+                                                    : '' }}">
                                                 <a href="javascript:void(0)" class="waves-effect waves-dark">
                                                     <span class="pcoded-mtext">Manage Cars</span>
                                                 </a>
                                                 <ul class="pcoded-submenu" @style([
-                                                    'display: block' => Request::is(
-                                                        'admin/cars', 
-                                                        'admin/car-brand', 
-                                                        'admin/car-model', 
-                                                        'admin/cars/create', 
-                                                        'admin/car-brand/create', 
-                                                        'admin/car-model/create', 
-                                                        'admin/cars/*/edit',
-                                                        'admin/car-brand/*/edit',
-                                                    'admin/car-brand/*/edit'),
+                                                    'display: block' => Request::is('admin/cars', 'admin/car-brand', 'admin/car-model', 'admin/cars/create', 'admin/car-brand/create', 'admin/car-model/create', 'admin/cars/*/edit', 'admin/car-brand/*/edit', 'admin/car-brand/*/edit'),
                                                 ])>
                                                     <li @class([
                                                         'active' => Request::is(
-                                                        'admin/car-brand',
-                                                        'admin/car-brand/create',
-                                                        'admin/car-brand/*/edit'),
+                                                            'admin/car-brand',
+                                                            'admin/car-brand/create',
+                                                            'admin/car-brand/*/edit'),
                                                     ])>
-                                                        <a href="{{ route('car-brand.index') }}" class="waves-effect waves-dark">
+                                                        <a href="{{ route('car-brand.index') }}"
+                                                            class="waves-effect waves-dark">
                                                             <span class="pcoded-mtext">Car Brands</span>
                                                         </a>
                                                     </li>
                                                     <li @class([
                                                         'active' => Request::is(
-                                                        'admin/car-model',
-                                                        'admin/car-model/create',
-                                                        'admin/car-model/*/edit'),
+                                                            'admin/car-model',
+                                                            'admin/car-model/create',
+                                                            'admin/car-model/*/edit'),
                                                     ])>
-                                                        <a href="{{ route('car-model.index') }}" class="waves-effect waves-dark">
+                                                        <a href="{{ route('car-model.index') }}"
+                                                            class="waves-effect waves-dark">
                                                             <span class="pcoded-mtext">Car Models</span>
                                                         </a>
                                                     </li>
                                                 </ul>
                                             </li>
+                                            @endrole
                                             <li @class([
                                                 'active' => Request::is(
                                                     'admin/cars',
@@ -353,25 +349,72 @@
                                             </li>
                                         </ul>
                                     </li>
-                                    <li class="ms-hover {{ Request::is(
-                                        'admin/settings', 
-                                        'admin/settings/create', 
-                                        'admin/settings/*/edit',
-                                        ) ? 'pcoded-trigger' : '' 
-                                    }}">
+                                    @role('Admin')
+                                    <li
+                                        class="ms-hover {{ Request::is('admin/settings', 'admin/settings/create', 'admin/settings/*/edit') ? 'pcoded-trigger' : '' }}">
                                         <a href="{{ route('setting') }}" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon">
-                                            <i class="fa fa-taxi" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="pcoded-mtext">Settings</span>
+                                            <span class="pcoded-micon">
+                                                <i class="feather icon-settings"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Settings</span>
                                         </a>
                                     </li>
+                                    @endrole
+                                
+                                    <li class="pcoded-hasmenu {{ Request::is(
+                                            'admin/plans',
+                                            'admin/subscriptions',
+                                            'admin/payments',
+                                            'admin/plans/create',
+                                            'admin/plans/*/edit',
+                                        )
+                                            ? 'pcoded-trigger'
+                                            : '' }}">
+                                        <a href="javascript:void(0)" class="waves-effect waves-dark">
+                                            <span class="pcoded-micon"><i class="fa fa-credit-card"></i></span>
+                                            <span class="pcoded-mtext">Subscriptions</span>
+                                        </a>
+                                        <ul class="pcoded-submenu" @style([
+                                            'display: block' => Request::is('admin/plans', 'admin/subscriptions', 'admin/payments', 'admin/plans/create', 'admin/plans/*/edit'),
+                                        ])>
+                                            <li @class([
+                                                'active' => Request::is(
+                                                    'admin/subscriptions'),
+                                            ])>
+                                                <a href="{{ route('subscriptions.index') }}" class="waves-effect waves-dark">
+                                                    <span class="pcoded-mtext">Subscribers List</span>
+                                                </a>
+                                            </li>
+                                            @role('Admin')
+                                            <li @class([
+                                                'active' => Request::is(
+                                                    'admin/plans',
+                                                    'admin/plans/create',
+                                                    'admin/plans/*/edit',
+                                                ),
+                                            ])>
+                                                <a href="{{ route('plans.index') }}" class="waves-effect waves-dark">
+                                                    <span class="pcoded-mtext">Plans List</span>
+                                                </a>
+                                            </li>
+                                            @endrole
+                                            <li @class([
+                                                'active' => Request::is(
+                                                    'admin/payments'),
+                                            ])>
+                                                <a href="{{ route('payments.index') }}" class="waves-effect waves-dark">
+                                                    <span class="pcoded-mtext">Payments List</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                     <li class="ms-hover">
                                         <a href="{{ route('logout') }}" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon">
-                                            <i class="feather icon-log-out"></i>
-                                        </span>
-                                        <span class="pcoded-mtext">Logout</span>
+                                            <span class="pcoded-micon">
+                                                <i class="feather icon-log-out"></i>
+                                            </span>
+                                            <span class="pcoded-mtext">Logout</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -411,39 +454,40 @@
         </div>
     </div>
 
-    
+
 
     <script data-cfasync="false" src="{{ asset('assets/js/email-decode.min.js') }}"></script>
-    <script  src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
-    <script  src="{{ asset('assets/js/popper.min.js') }}"></script>
-    <script  src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/js/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
 
-    <script src="{{ asset('assets/js/waves.min.js') }}" ></script>
+    <script src="{{ asset('assets/js/waves.min.js') }}"></script>
 
-    <script  src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
 
-    <script src="{{ asset('assets/js/jquery.flot.js') }}" ></script>
-    <script src="{{ asset('assets/js/jquery.flot.categories.js') }}" ></script>
-    <script src="{{ asset('assets/js/curvedlines.js') }}" ></script>
-    <script src="{{ asset('assets/js/jquery.flot.tooltip.min.js') }}" ></script>
+    <script src="{{ asset('assets/js/jquery.flot.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.flot.categories.js') }}"></script>
+    <script src="{{ asset('assets/js/curvedlines.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.flot.tooltip.min.js') }}"></script>
 
-    <script src="{{ asset('assets/js/chartist.js') }}" ></script>
+    <script src="{{ asset('assets/js/chartist.js') }}"></script>
 
-    <script src="{{ asset('assets/js/amcharts.js') }}" ></script>
-    <script src="{{ asset('assets/js/serial.js') }}" ></script>
-    <script src="{{ asset('assets/js/light.js') }}" ></script>
+    <script src="{{ asset('assets/js/amcharts.js') }}"></script>
+    <script src="{{ asset('assets/js/serial.js') }}"></script>
+    <script src="{{ asset('assets/js/light.js') }}"></script>
 
-    <script src="{{ asset('assets/js/pcoded.min.js') }}" ></script>
-    <script src="{{ asset('assets/js/vertical-layout.min.js') }}" ></script>
-    <script  src="{{ asset('assets/js/custom-dashboard.min.js') }}"></script>
-    <script  src="{{ asset('assets/js/script.min.js') }}"></script>
-    <script  src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pcoded.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vertical-layout.min.js') }}"></script>
+    <script src="{{ asset('assets/js/custom-dashboard.min.js') }}"></script>
+    <script src="{{ asset('assets/js/script.min.js') }}"></script>
+    <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
-    <script src="{{ asset('assets/js/rocket-loader.min.js') }}" data-cf-settings="d2d1d6e2f87cbebdf4013b26-|49" defer=""></script>
+    <script src="{{ asset('assets/js/rocket-loader.min.js') }}" data-cf-settings="d2d1d6e2f87cbebdf4013b26-|49" defer="">
+    </script>
     <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-        $(function() {            
+        $(function() {
             $('.delete-btn').click(function() {
                 let source = $(this).data('source');
                 let deleteApiEndpoint = $(this).data('endpoint');
@@ -463,13 +507,13 @@
                                 '_token': '{{ csrf_token() }}'
                             },
                             success: function(response) {
-                                if(response.success){
+                                if (response.success) {
                                     swal({
                                         title: "Success!",
                                         text: response.message,
                                         type: "success",
                                         showConfirmButton: false
-                                    }) 
+                                    })
 
                                     setTimeout(() => {
                                         location.reload();

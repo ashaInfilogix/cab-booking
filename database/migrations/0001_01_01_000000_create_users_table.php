@@ -26,9 +26,12 @@ return new class extends Migration
             $table->string('profile_pic')->nullable();
             $table->string('country')->nullable();
             $table->string('address')->nullable();
+            $table->integer('position')->nullable();
+            $table->string('show_on')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('status', ['not_approved','active', 'deactive', 'blocked'])->nullable();
+            $table->enum('registration_status', ['processing','completed'])->nullable()->default('processing');
             $table->rememberToken();
             $table->timestamps();
         });
